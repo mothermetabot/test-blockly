@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/blockly/blockly.min.js"></script>
+    <script src="https://unpkg.com/blockly/python_compressed"></script>
+</head>
+
+<body>
+    <div id="blocklyDiv" style="height: 480px; width: 600px;">
+        <script>
+
+            const gen = Blockly.Python;
+            console.log(gen);
+
+            Blockly.Blocks['heat_to'] = {
+                init: function () {
+                    this.setNextStatement(true);
+                    this.setPreviousStatement(true);
+
+                    this.appendDummyInput()
+                        .appendField('Set temp to')
+                        .appendField(new Blockly.FieldNumber(10, 1, 1000, 10), 'TEMP');
+
+                    this.appendDummyInput()
+                        .appendField('with rate')
+                        .appendField(new Blockly.FieldNumber(10, 1, 30, 10), 'RATE');
+                    this.setColour(160);
+                },
+                
+            };
+
+            Blockly.Blocks['time'] = {
+                init: function () {
+                    this.appendDummyInput()
+                        .appendField('Time');
+                    this.setColour(150);
+                    this.setOutput(true, "Number");
+                }
+            };
+
+            gen['heat_to'] = function (block) {
+                var temp = block.getFieldValue('TEMP');
+                var rate = block.getFieldValue('RATE');
+
+                const strg = Blockly.Python.statementToCode(block, 'DO')
+console.log(strg);
+                return "set_temperature(" + temp + ", " + rate + ")\n";
+            }
+
+            gen['time'] = function (block) {
+
+                return "0";
+            }
+            const toolbox = {
+                "kind": "flyoutToolbox",
+                "contents": [
+                    {
+                        "kind": "block",
+                        "type": "heat_to"
+                    },
+                    {
+                        "kind": "block",
+                        "type": "time"
+                    },
+
+                    {
+                        "kind": "block",
+                        "type": "controls_if"
+                    },
+                    {
+                        "kind": "block",
+                        "type": "controls_repeat_ext"
+                    },
+                    {
+                        "kind": "block",
+                        "type": "logic_compare"
+                    },
+                    {
+                        "kind": "block",
+                        "type": "math_number"
+                    },
+                ]
+            }
+
+            const workspace = Blockly.inject('blocklyDiv', { toolbox: toolbox });
+
+            function updateCode(event) {
+                const code = Blockly.Python.workspaceToCode(workspace);
+                document.getElementById('code').value = code;
+            }
+            workspace.addChangeListener(updateCode);
+
+        </script>
+    </div>
+    <textarea id="code" style="height: 480px; width: 600px;">
+    </textarea>
+</body>
+
+</html>
